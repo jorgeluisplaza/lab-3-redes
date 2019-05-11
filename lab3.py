@@ -4,25 +4,32 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from scipy import misc
 import cv2
+from scipy import fftpack
 
-def convolution(X, Y):
-	#print(X)
-	#print(Y)
+# Calculate convolution beetween kernel and image (both matrix)
+# Return the matrix of the operation
+def convolution(kernel, image):
 	filteredImage = []
-	for i in range(len(Y) - len(X) + 1):
+	for i in range(len(image) - len(kernel) + 1):
 		auxRow = []
-		for j in range(len(Y[0])-len(X[0]) + 1):
-			auxRow.append(matrixProduct(X, Y, i, j))
+		for j in range(len(image[0])-len(kernel[0]) + 1):
+			auxRow.append(matrixProduct(kernel, image, i, j))
 		filteredImage.append(auxRow)
 	return extendMatrix(filteredImage)
 
-def matrixProduct(kernel, matrix, rowNumber, colNumber):
+# Calculate the sum of the multiplication of every row and column given
+# by the parameters rowNumber and colNumber of
+# The matrix kernel and image
+# Return total sum
+def matrixProduct(kernel, image, rowNumber, colNumber):
 	sum = 0
 	for i in range(len(kernel)):
 		for j in range(len(kernel[0])):
-			sum = sum + kernel[i][j] * matrix[rowNumber+i][colNumber+j]
+			sum = sum + kernel[i][j] * image[rowNumber+i][colNumber+j]
 	return sum
 
+# Generate zeros around matrix variable
+# This is for give dark edges to the image
 def extendMatrix(matrix):
 	newMatrix = []
 	auxRow = []
@@ -40,7 +47,9 @@ def extendMatrix(matrix):
 		auxRow.append(0)
 	newMatrix.append(auxRow)
 	return newMatrix
- 
+
+# Divide every component of matrix by 256
+# This is for the kernel given by the laboratory 
 def divideMatrix(matrix):
 	dividedMatrix = []
 	for i in matrix:
@@ -52,6 +61,7 @@ def divideMatrix(matrix):
 	#print(dividedMatrix)
 	return dividedMatrix
 
+# Apply Gaussian filter given on the image parameter
 def gaussianFilter(image):
 
 	initialKernel = ([[1.0, 4.0, 6.0, 4.0, 1.0],
@@ -64,15 +74,11 @@ def gaussianFilter(image):
 
 	filterIm = convolution(kernel, image)
 
-	plt.figure('Gaussian Filter')
-	plt.subplot(121)
-	plt.imshow(image)
-	plt.title('Original')
+	generateImageSubPlot('Gaussian Filter', 'Original', 'Gaussian Filter', image, filterIm)
 
-	plt.subplot(122)
-	plt.imshow(filterIm)
-	plt.title('Filtered')
+	return filterIm
 
+# Apply Edge Filter given on the image parameter
 def edgeFilter(image):
 
 	kernel = [[1, 2, 0, -2, -1], 
@@ -83,21 +89,47 @@ def edgeFilter(image):
 
 	filterIm = convolution(kernel, image)
 
-	plt.figure('Edge Filter')
-	plt.subplot(121)
-	plt.imshow(image)
-	plt.title('Original')
+	generateImageSubPlot('Edge Filter', 'Original', 'Edge Filter', image, filterIm)
 
+	return filterIm
+
+# Function to generate plot 
+def generatePlot(figName, figTitle, data):
+    plt.figure(figName)
+    plt.title(figTitle)
+    plt.plot(data)
+
+# Calculate fourier transform of image parameter
+def imageFourierTransform(image):	
+	f = np.fft.fft2(image)
+	fshift = np.fft.fftshift(f)
+	magnitude_spectrum = 20*np.log(np.abs(fshift))
+	return magnitude_spectrum
+
+# Generate two subplot of image1 and image2
+def generateImageSubPlot(figName, title1, title2, image1, image2):	
+	plt.figure(figName)
+	plt.subplot(121)
+	plt.imshow(image1, cmap=plt.cm.gray)
+	plt.title(title1)
 	plt.subplot(122)
-	plt.imshow(filterIm)
-	plt.title('Filtered')
+	plt.imshow(image2, cmap=plt.cm.gray)
+	plt.title(title2)
 
 
 leenaImage = misc.imread('leena512.bmp')
+ 
+gaussFilter = gaussianFilter(leenaImage)
 
-gaussianFilter(leenaImage)
+edgeFilter = edgeFilter(leenaImage)
 
-edgeFilter(leenaImage)
+fourierTransform = imageFourierTransform(edgeFilter)
+
+fourierGaussianTransform = imageFourierTransform(gaussFilter)
+
+generateImageSubPlot('Frequency Domain Edge Filter', 'Edge Filter', 'Magnitude Spectrum', edgeFilter, fourierTransform)
+
+generateImageSubPlot('Frequency Domain Gaussian Filter', 'Gaussian Filter',  'Magnitude Spectrum', gaussFilter, fourierGaussianTransform)
 
 plt.show()
 
