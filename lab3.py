@@ -1,12 +1,13 @@
 import numpy as np
-import scipy as sc
+from scipy import ndimage
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+from scipy import misc
+import cv2
 
-
-
-def convolution():
-	#sum = 0
-	X = [[12, 7, 3], [4, 6, 7], [7, 9, 2]]
-	Y = [[12, 5, 6, 7, 9], [5, 6, 3, 2, 1], [8, 9, 2, 3 ,5]]
+def convolution(X, Y):
+	#print(X)
+	#print(Y)
 	filteredImage = []
 	for i in range(len(Y) - len(X) + 1):
 		auxRow = []
@@ -14,14 +15,6 @@ def convolution():
 			auxRow.append(matrixProduct(X, Y, i, j))
 		filteredImage.append(auxRow)
 	return extendMatrix(filteredImage)
-
-
-def defineColumn(matrix, colNumber):
-	auxColumn = []
-	for row in matrix:
-		auxColumn.append(row[colNumber])
-	return auxColumn
-
 
 def matrixProduct(kernel, matrix, rowNumber, colNumber):
 	sum = 0
@@ -39,7 +32,7 @@ def extendMatrix(matrix):
 	for row in matrix:
 		auxRow = [0]
 		for i in row:
-			auxRow.append(ic)
+			auxRow.append(i)
 		auxRow.append(0)
 		newMatrix.append(auxRow)
 	auxRow = []
@@ -47,5 +40,37 @@ def extendMatrix(matrix):
 		auxRow.append(0)
 	newMatrix.append(auxRow)
 	return newMatrix
+ 
+def divideMatrix(matrix):
+	dividedMatrix = []
+	for i in matrix:
+		auxList = []
+		for j in i:
+			j = j/256
+			auxList.append(j)
+		dividedMatrix.append(auxList)
+	#print(dividedMatrix)
+	return dividedMatrix
 
-print(convolution())
+leenaImage = misc.imread('leena512.bmp')
+
+initialKernel = ([[1.0, 4.0, 6.0, 4.0, 1.0],
+		 [4.0, 16.0, 24.0, 16.0, 4.0], 
+		 [6.0, 24.0, 36.0, 24.0, 6.0], 
+		 [4.0, 16.0, 24.0, 16.0, 4.0], 
+		 [1.0, 4.0, 6.0, 4.0, 1.0]])
+
+kernel = divideMatrix(initialKernel)
+
+filterIm = convolution(kernel, leenaImage)
+
+plt.subplot(121)
+plt.imshow(leenaImage)
+plt.title('Original')
+
+plt.subplot(122)
+plt.imshow(filterIm)
+plt.title('Filtered')
+plt.show()
+
+#print(leenaImage)
