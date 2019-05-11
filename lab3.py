@@ -52,25 +52,53 @@ def divideMatrix(matrix):
 	#print(dividedMatrix)
 	return dividedMatrix
 
+def gaussianFilter(image):
+
+	initialKernel = ([[1.0, 4.0, 6.0, 4.0, 1.0],
+		 			  [4.0, 16.0, 24.0, 16.0, 4.0], 
+		 			  [6.0, 24.0, 36.0, 24.0, 6.0], 
+		 			  [4.0, 16.0, 24.0, 16.0, 4.0], 
+		  			  [1.0, 4.0, 6.0, 4.0, 1.0]])
+
+	kernel = divideMatrix(initialKernel)
+
+	filterIm = convolution(kernel, image)
+
+	plt.figure('Gaussian Filter')
+	plt.subplot(121)
+	plt.imshow(image)
+	plt.title('Original')
+
+	plt.subplot(122)
+	plt.imshow(filterIm)
+	plt.title('Filtered')
+
+def edgeFilter(image):
+
+	kernel = [[1, 2, 0, -2, -1], 
+			  [1, 2, 0, -2, -1], 
+			  [1, 2, 0, -2, -1], 
+		 	  [1, 2, 0, -2, -1], 
+			  [1, 2, 0, -2, -1]]
+
+	filterIm = convolution(kernel, image)
+
+	plt.figure('Edge Filter')
+	plt.subplot(121)
+	plt.imshow(image)
+	plt.title('Original')
+
+	plt.subplot(122)
+	plt.imshow(filterIm)
+	plt.title('Filtered')
+
+
 leenaImage = misc.imread('leena512.bmp')
 
-initialKernel = ([[1.0, 4.0, 6.0, 4.0, 1.0],
-		 [4.0, 16.0, 24.0, 16.0, 4.0], 
-		 [6.0, 24.0, 36.0, 24.0, 6.0], 
-		 [4.0, 16.0, 24.0, 16.0, 4.0], 
-		 [1.0, 4.0, 6.0, 4.0, 1.0]])
+gaussianFilter(leenaImage)
 
-kernel = divideMatrix(initialKernel)
+edgeFilter(leenaImage)
 
-filterIm = convolution(kernel, leenaImage)
-
-plt.subplot(121)
-plt.imshow(leenaImage)
-plt.title('Original')
-
-plt.subplot(122)
-plt.imshow(filterIm)
-plt.title('Filtered')
 plt.show()
 
 #print(leenaImage)
