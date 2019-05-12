@@ -120,11 +120,15 @@ gaussFilter = gaussianFilter(leenaImage)
 
 edgeFilter = edgeFilter(leenaImage)
 
-fourierTransform = imageFourierTransform(edgeFilter)
+fourierTransform = imageFourierTransform(leenaImage)
+
+edgeFourierTransform = imageFourierTransform(edgeFilter)
 
 gaussianFourierTransform = imageFourierTransform(gaussFilter)
 
-generateImageSubPlot('Frequency Domain Edge Filter', 'Edge Filter', 'Magnitude Spectrum', edgeFilter, fourierTransform)
+generateImageSubPlot('Frequency Domain Original Image', 'Original', 'Magnitude Spectrum', leenaImage, fourierTransform)
+
+generateImageSubPlot('Frequency Domain Edge Filter', 'Edge Filter', 'Magnitude Spectrum', edgeFilter, edgeFourierTransform)
 
 generateImageSubPlot('Frequency Domain Gaussian Filter', 'Gaussian Filter',  'Magnitude Spectrum', gaussFilter, gaussianFourierTransform)
 
