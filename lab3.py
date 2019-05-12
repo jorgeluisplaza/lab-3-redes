@@ -58,12 +58,10 @@ def divideMatrix(matrix):
 			j = j/256
 			auxList.append(j)
 		dividedMatrix.append(auxList)
-	#print(dividedMatrix)
 	return dividedMatrix
 
 # Apply Gaussian filter given on the image parameter
 def gaussianFilter(image):
-
 	initialKernel = ([[1.0, 4.0, 6.0, 4.0, 1.0],
 		 			  [4.0, 16.0, 24.0, 16.0, 4.0], 
 		 			  [6.0, 24.0, 36.0, 24.0, 6.0], 
@@ -80,7 +78,6 @@ def gaussianFilter(image):
 
 # Apply Edge Filter given on the image parameter
 def edgeFilter(image):
-
 	kernel = [[1, 2, 0, -2, -1], 
 			  [1, 2, 0, -2, -1], 
 			  [1, 2, 0, -2, -1], 
@@ -125,12 +122,10 @@ edgeFilter = edgeFilter(leenaImage)
 
 fourierTransform = imageFourierTransform(edgeFilter)
 
-fourierGaussianTransform = imageFourierTransform(gaussFilter)
+gaussianFourierTransform = imageFourierTransform(gaussFilter)
 
 generateImageSubPlot('Frequency Domain Edge Filter', 'Edge Filter', 'Magnitude Spectrum', edgeFilter, fourierTransform)
 
-generateImageSubPlot('Frequency Domain Gaussian Filter', 'Gaussian Filter',  'Magnitude Spectrum', gaussFilter, fourierGaussianTransform)
+generateImageSubPlot('Frequency Domain Gaussian Filter', 'Gaussian Filter',  'Magnitude Spectrum', gaussFilter, gaussianFourierTransform)
 
 plt.show()
-
-#print(leenaImage)
